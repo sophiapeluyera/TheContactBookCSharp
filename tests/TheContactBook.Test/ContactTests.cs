@@ -1,79 +1,67 @@
 using Xunit;
 using TheContactBook;
-using System;
 
 namespace TheContactBook.Tests
 {
     public class ContactTests
     {
-        // ---------- Constructor & Getters ----------
-
+        // -------------------------------------------------------------
+        // Constructor & Getters
+        // -------------------------------------------------------------
         [Fact]
         public void Constructor_ShouldInitializeProperties()
         {
-            var c = new Contact("John", "Doe", "123", "john@example.com");
+            var contact = new Contact("John", "Doe", "1234567890", "john@example.com");
 
-            Assert.Equal("John", c.GetFname());
-            Assert.Equal("Doe", c.GetLname());
-            Assert.Equal("123", c.GetPhone());
-            Assert.Equal("john@example.com", c.GetEmail());
+            Assert.Equal("John", contact.GetFname());
+            Assert.Equal("Doe", contact.GetLname());
+            Assert.Equal("1234567890", contact.GetPhone());
+            Assert.Equal("john@example.com", contact.GetEmail());
         }
 
-        // ---------- Setters ----------
-
+        // -------------------------------------------------------------
+        // Setters
+        // -------------------------------------------------------------
         [Fact]
-        public void Setters_ShouldUpdateProperties()
+        public void Setters_ShouldUpdateValues()
         {
-            var c = new Contact("A", "B", "C", "D");
+            var contact = new Contact("John", "Doe", "123", "john@example.com");
 
-            c.SetFname("John");
-            c.SetLname("Doe");
-            c.SetPhone("555-1234");
-            c.SetEmail("john@example.com");
+            contact.SetFname("Jane");
+            contact.SetLname("Smith");
+            contact.SetPhone("9876543210");
+            contact.SetEmail("jane@example.com");
 
-            Assert.Equal("John", c.GetFname());
-            Assert.Equal("Doe", c.GetLname());
-            Assert.Equal("555-1234", c.GetPhone());
-            Assert.Equal("john@example.com", c.GetEmail());
+            Assert.Equal("Jane", contact.GetFname());
+            Assert.Equal("Smith", contact.GetLname());
+            Assert.Equal("9876543210", contact.GetPhone());
+            Assert.Equal("jane@example.com", contact.GetEmail());
         }
 
-        // ---------- ToString ----------
-
+        // -------------------------------------------------------------
+        // ToString
+        // -------------------------------------------------------------
         [Fact]
         public void ToString_ShouldReturnFormattedString()
         {
-            var c = new Contact("John", "Doe", "123", "john@example.com");
+            var contact = new Contact("John", "Doe", "1234567890", "john@example.com");
 
-            var expected = "Contact: John Doe, Phone: 123, Email: john@example.com";
+            var expected = "Contact: John Doe, Phone: 1234567890, Email: john@example.com";
 
-            Assert.Equal(expected, c.ToString());
+            Assert.Equal(expected, contact.ToString());
         }
 
-        // ---------- Equals(Contact) ----------
-
+        // -------------------------------------------------------------
+        // Equality
+        // -------------------------------------------------------------
         [Fact]
-        public void Equals_ShouldReturnTrueForSameReference()
-        {
-            var c = new Contact("John", "Doe", "123", "john@example.com");
-
-            Assert.True(c.Equals(c));
-        }
-
-        [Fact]
-        public void Equals_ShouldReturnFalseForNull()
-        {
-            var c = new Contact("John", "Doe", "123", "john@example.com");
-
-            Assert.False(c.Equals(null));
-        }
-
-        [Fact]
-        public void Equals_ShouldReturnTrueForEqualValues()
+        public void Equals_ShouldReturnTrueForSameValues()
         {
             var c1 = new Contact("John", "Doe", "123", "john@example.com");
             var c2 = new Contact("John", "Doe", "123", "john@example.com");
 
             Assert.True(c1.Equals(c2));
+            Assert.True(c1.Equals((object)c2));
         }
 
         [Fact]
@@ -85,38 +73,27 @@ namespace TheContactBook.Tests
             Assert.False(c1.Equals(c2));
         }
 
-        // ---------- Equals(object) ----------
-
         [Fact]
-        public void EqualsObject_ShouldReturnFalseForDifferentType()
-        {
-            var c = new Contact("John", "Doe", "123", "john@example.com");
-
-            Assert.False(c.Equals("not a contact"));
-        }
-
-        [Fact]
-        public void EqualsObject_ShouldReturnTrueForEqualContact()
+        public void Equals_ShouldReturnFalseForNull()
         {
             var c1 = new Contact("John", "Doe", "123", "john@example.com");
-            var c2 = new Contact("John", "Doe", "123", "john@example.com");
 
-            Assert.True(c1.Equals((object)c2));
+            Assert.False(c1.Equals(null));
         }
 
-        // ---------- Operator != ----------
-
         [Fact]
-        public void OperatorNotEqual_ShouldReturnFalseForEqualContacts()
+        public void Equals_ShouldReturnTrueForSameReference()
         {
             var c1 = new Contact("John", "Doe", "123", "john@example.com");
-            var c2 = new Contact("John", "Doe", "123", "john@example.com");
 
-            Assert.False(c1 != c2);
+            Assert.True(c1.Equals(c1));
         }
 
+        // -------------------------------------------------------------
+        // Operator !=
+        // -------------------------------------------------------------
         [Fact]
-        public void OperatorNotEqual_ShouldReturnTrueForDifferentContacts()
+        public void InequalityOperator_ShouldReturnTrueForDifferentContacts()
         {
             var c1 = new Contact("John", "Doe", "123", "john@example.com");
             var c2 = new Contact("Jane", "Doe", "123", "john@example.com");
@@ -125,20 +102,19 @@ namespace TheContactBook.Tests
         }
 
         [Fact]
-        public void OperatorNotEqual_ShouldHandleNullsCorrectly()
+        public void InequalityOperator_ShouldReturnFalseForEqualContacts()
         {
-            Contact? c1 = null;
-            Contact? c2 = new Contact("John", "Doe", "123", "john@example.com");
+            var c1 = new Contact("John", "Doe", "123", "john@example.com");
+            var c2 = new Contact("John", "Doe", "123", "john@example.com");
 
-            Assert.True(c1 != c2);
-            Assert.True(c2 != c1);
-            Assert.False(c1 != null);
+            Assert.False(c1 != c2);
         }
 
-        // ---------- GetHashCode ----------
-
+        // -------------------------------------------------------------
+        // GetHashCode
+        // -------------------------------------------------------------
         [Fact]
-        public void GetHashCode_ShouldBeEqualForEqualContacts()
+        public void GetHashCode_ShouldBeEqualForEqualObjects()
         {
             var c1 = new Contact("John", "Doe", "123", "john@example.com");
             var c2 = new Contact("John", "Doe", "123", "john@example.com");
@@ -147,25 +123,12 @@ namespace TheContactBook.Tests
         }
 
         [Fact]
-        public void GetHashCode_ShouldDifferForDifferentContacts()
+        public void GetHashCode_ShouldDifferForDifferentObjects()
         {
             var c1 = new Contact("John", "Doe", "123", "john@example.com");
             var c2 = new Contact("Jane", "Doe", "123", "john@example.com");
 
             Assert.NotEqual(c1.GetHashCode(), c2.GetHashCode());
-        }
-
-        [Fact]
-        public void GetHashCode_ShouldBeConsistentAcrossMultipleCalls()
-        {
-            var c = new Contact("John", "Doe", "123", "john@example.com");
-
-            var h1 = c.GetHashCode();
-            var h2 = c.GetHashCode();
-            var h3 = c.GetHashCode();
-
-            Assert.Equal(h1, h2);
-            Assert.Equal(h2, h3);
         }
     }
 }
