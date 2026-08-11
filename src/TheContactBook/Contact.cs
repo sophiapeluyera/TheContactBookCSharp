@@ -72,7 +72,16 @@ public class Contact : IEquatable<Contact>
         return Equals(obj as Contact);
     }
 
-    public static bool operator != (Contact? x, Contact? y)
+    public static bool operator ==(Contact? x, Contact? y)
+    {
+        if (x is null && y is null)
+            return true;
+        if (x is null || y is null)
+            return false;
+        return x.Equals(y);
+    }
+
+    public static bool operator !=(Contact? x, Contact? y)
     {
         return !(x == y);
     }
