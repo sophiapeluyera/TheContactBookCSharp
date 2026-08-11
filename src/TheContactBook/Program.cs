@@ -2,8 +2,10 @@
 
     public class Program
     {
-        static void Main()
+        public static void Main()
         {
+            var contactBook = new ContactBook();
+            contactBook.Start();
             
         }
     }
