@@ -1,1 +1,10 @@
-﻿Console.WriteLine("Hello, World!");
+﻿namespace TheContactBook;
+{
+    public class Program
+    {
+        static void Main()
+        {
+            
+        }
+    }
+}
