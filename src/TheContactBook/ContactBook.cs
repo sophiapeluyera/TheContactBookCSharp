@@ -21,10 +21,12 @@ public class ContactBook
         CREATE_CONTACT, REVIEW_CONTACT, UPDATE_CONTACT, DELETE_CONTACT,
         FIND_CONTACTS, ORDER_CONTACTS, DEDUPLICATE_CONTACTS, EXIT
     };
+    
+    private List<Contact> allContacts;
 
-    public ContactBook()
+    public ContactBook(List<Contact> contacts = null!)
     {
-      
+        allContacts = (contacts == null) ? new List<Contact>() : contacts;
     }
 
     public void Start()
@@ -59,7 +61,52 @@ public class ContactBook
 
     private void ShowContacts()
     {
-        
+        if (allContacts.Count == 0)
+        {
+            Console.WriteLine("No contacts found.");
+        }
+        else
+        {
+            int indexCol = -allContacts.Count.ToString().Length;
+            int fnameCol = -allContacts.Max(c => c.GetFname()?.Length ?? 0);
+            int lnameCol = -allContacts.Max(c => c.GetLname()?.Length ?? 0);
+            int phoneCol = -allContacts.Max(c => c.GetPhone()?.Length ?? 0);
+            int emailCol = -allContacts.Max(c => c.GetEmail()?.Length ?? 0);
+
+            //header: had to do it in another format
+
+            Console.WriteLine($"{"#".PadRight(-indexCol)} " +
+            $"{"   First Name  ".PadRight(-fnameCol)} " +
+            $"{"Last Name  ".PadRight(-lnameCol)} " +
+            $"{"   Phone  ".PadRight(-phoneCol)} " +
+            $"{"            Email  ".PadRight(-emailCol)}");
+
+            Console.WriteLine(new string('-', 80));
+
+            int n = allContacts.Count;
+            int page = 1;
+            int size = 10;
+            int pageCount = (int)  Math.Max(1, Math.Ceiling(n/ (double) size));
+            int s = Math.Clamp((page - 1) * size, 0, n);
+            int e = Math.Clamp(s + size, 0, n);
+           
+            
+
+            for(int i = s; i < e; i++)
+            {
+                //contacts: had to do it in another format
+
+                var contact = allContacts[i];
+                Console.WriteLine($"{(i + 1).ToString().PadRight(-indexCol)}. " +
+                $"   {contact.GetFname()?.PadRight(-fnameCol)}    " +
+                $"   {contact.GetLname()?.PadRight(-lnameCol)}    " +
+                $"   {contact.GetPhone()?.PadRight(-phoneCol)}    " +
+                $"    {contact.GetEmail()?.PadRight(-emailCol)}   ");
+            }
+            Console.WriteLine();
+            Console.WriteLine($"Page {page} of {pageCount} ({s}-{e} of {n})");
+
+        }
     }
 
     private void ShowInputOptions()
