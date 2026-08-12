@@ -36,10 +36,11 @@ public class ContactBook
         string input;
         do
         {
-            ShowContacts();
+            
 
             do
             {
+                ShowContacts();
                 ShowInputOptions();
                 input = GetInput();
                 
@@ -130,7 +131,17 @@ public class ContactBook
 
     private bool IsValidInput(string input)
     {
-        return true;
+        
+        if(!COMANDS.Contains(input))
+        {
+            Console.WriteLine("Invalid input");
+            PressEnterToContinue();
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     private void ProcessInput(string input)
