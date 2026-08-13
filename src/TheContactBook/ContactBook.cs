@@ -2,6 +2,11 @@ namespace TheContactBook;
 
 public class ContactBook
 {
+    public const string YES = "Y";
+    public const string NO = "N";
+
+    public readonly string[] YES_NO = new string[] { YES, NO };
+
     public const string NEXT_PAGE = "+";
     public const string PREV_PAGE = "-";
     private const string GOTO_PAGE = "G";
@@ -236,9 +241,37 @@ public class ContactBook
         Console.WriteLine("Exit");
     }
 
+    private string GetOptions(string prompt, string [] validOptions, string defaultOption)
+    {
+        string options = string.Join("/", validOptions);
+        Console.Write(prompt + $"[{options}] ({defaultOption}) ");
+        string option = Console.ReadLine()!.ToUpper();
+        if(string.IsNullOrWhiteSpace(option))
+        {
+            option = defaultOption;
+        }
+        while(!validOptions.Contains(option))
+        {
+            Console.WriteLine("Error: Invalid Option. Please try again.");
+            Console.Write(prompt + $"[{options}] ({defaultOption}) ");
+            option = Console.ReadLine()!;
+            if(string.IsNullOrWhiteSpace(option))
+            {
+                option = defaultOption;
+            }
+        }
+        return option;
+        
+    }
+
+    private bool Confirm(string prompt, string defaultOption)
+    {
+        return GetOptions(prompt, YES_NO, defaultOption) == YES;
+    }
+
     private bool ConfirmExit()
     {
-        return true;
+        return Confirm("Do you want to exit?", NO);
     }
     private void ShowExitScreen()
     {
