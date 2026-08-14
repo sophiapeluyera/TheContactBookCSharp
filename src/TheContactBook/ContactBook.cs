@@ -28,10 +28,16 @@ public class ContactBook
     };
     
     private List<Contact> allContacts;
+    private int page;
+    private int size;
+    private bool isExit;
 
     public ContactBook(List<Contact> contacts = null!)
     {
         allContacts = (contacts == null) ? new List<Contact>() : contacts;
+        page = 1;
+        size = 10;
+        isExit = false;
     }
 
     public void Start()
@@ -67,17 +73,22 @@ public class ContactBook
 
     private void ShowContacts()
     {
-        if (allContacts.Count == 0)
+        ShowContacts(allContacts, page , size);
+    }
+
+    private void ShowContacts(List<Contact> contacts, int page, int size)
+    {
+        if (contacts.Count == 0)
         {
             Console.WriteLine("No contacts found.");
         }
         else
         {
-            int indexCol = -allContacts.Count.ToString().Length;
-            int fnameCol = -allContacts.Max(c => c.GetFname()?.Length ?? 0);
-            int lnameCol = -allContacts.Max(c => c.GetLname()?.Length ?? 0);
-            int phoneCol = -allContacts.Max(c => c.GetPhone()?.Length ?? 0);
-            int emailCol = -allContacts.Max(c => c.GetEmail()?.Length ?? 0);
+            int indexCol = -contacts.Count.ToString().Length;
+            int fnameCol = -contacts.Max(c => c.GetFname()?.Length ?? 0);
+            int lnameCol = -contacts.Max(c => c.GetLname()?.Length ?? 0);
+            int phoneCol = -contacts.Max(c => c.GetPhone()?.Length ?? 0);
+            int emailCol = -contacts.Max(c => c.GetEmail()?.Length ?? 0);
 
             //header: had to do it in another format
 
@@ -89,31 +100,36 @@ public class ContactBook
 
             Console.WriteLine(new string('-', 80));
 
-            int n = allContacts.Count;
-            int page = 1;
-            int size = 10;
-            int pageCount = (int)  Math.Max(1, Math.Ceiling(n/ (double) size));
+            int n = contacts.Count;
+            int pageCount = PageCount(contacts, size);
             int s = Math.Clamp((page - 1) * size, 0, n);
             int e = Math.Clamp(s + size, 0, n);
-           
-            
 
-            for(int i = s; i < e; i++)
+
+
+            for (int i = s; i < e; i++)
             {
                 //contacts: had to do it in another format
 
-                var contact = allContacts[i];
+                var contact = contacts[i];
                 Console.WriteLine($"{(i + 1).ToString().PadRight(-indexCol)}. " +
                 $"   {contact.GetFname()?.PadRight(-fnameCol)}    " +
                 $"   {contact.GetLname()?.PadRight(-lnameCol)}    " +
                 $"   {contact.GetPhone()?.PadRight(-phoneCol)}    " +
                 $"    {contact.GetEmail()?.PadRight(-emailCol)}   ");
             }
+
+            for(int i = 0; i < size - (e - s); i++)
+            {
+                Console.WriteLine();
+            }
             Console.WriteLine();
             Console.WriteLine($"Page {page} of {pageCount} ({s}-{e} of {n})");
 
         }
     }
+
+
 
     private void ShowInputOptions()
     {
@@ -183,12 +199,23 @@ public class ContactBook
 
     private void NextPage()
     {
-        Console.WriteLine("Next Page");
+        NextPage(allContacts, ref page, size);
+        
     }
 
+    private void NextPage(List<Contact> contacts, ref int page, int size)
+    {
+        page = Math.Clamp(page + 1, 1, PageCount(contacts, size));
+    }
     private void PrevPage()
     {
-        Console.WriteLine("Previous Page");
+        PrevPage(allContacts, ref page, size);
+        
+    }
+
+    private void PrevPage(List<Contact> contacts, ref int page, int size)
+    {
+        page = Math.Clamp(page - 1, 1, PageCount(contacts, size));
     }
 
     private void GotoPage()
@@ -238,10 +265,10 @@ public class ContactBook
 
     private void Exit()
     {
-        Console.WriteLine("Exit");
+        isExit = true;
     }
 
-    private string GetOptions(string prompt, string [] validOptions, string defaultOption)
+    private string GetOption(string prompt, string [] validOptions, string defaultOption)
     {
         string options = string.Join("/", validOptions);
         Console.Write(prompt + $"[{options}] ({defaultOption}) ");
@@ -266,12 +293,17 @@ public class ContactBook
 
     private bool Confirm(string prompt, string defaultOption)
     {
-        return GetOptions(prompt, YES_NO, defaultOption) == YES;
+        return GetOption(prompt, YES_NO, defaultOption) == YES;
+    }
+
+    private static int PageCount(List<Contact> contacts , int size)
+    {
+        return (int)Math.Max(1, Math.Ceiling(contacts.Count / (double)size));
     }
 
     private bool ConfirmExit()
     {
-        return Confirm("Do you want to exit?", NO);
+        return (isExit) ? isExit =  Confirm("Do you want to exit?", NO) : false;
     }
     private void ShowExitScreen()
     {
