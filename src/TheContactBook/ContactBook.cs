@@ -1,5 +1,6 @@
 namespace TheContactBook;
 
+using static ContactComparer;
 public class ContactBook
 {
     public const string YES = "Y";
@@ -450,7 +451,16 @@ public class ContactBook
 
     private void OrderContacts()
     {
-        Console.WriteLine("Order Contacts");
+        SortType[] sortTypes = new SortType[]
+        {
+            SortType.Fname, SortType.Lname, SortType.Phone, SortType.Email
+        };
+
+        int index = GetInt ("Sort contacts by [0] Fname [1] Lname [2] Phone [3] Email", 0, 3);
+
+        ContactComparer ccp = new ContactComparer(sortTypes[index]);
+        allContacts.Sort(ccp);
+        filteredContacts.Sort(ccp);    
     }
 
     private void DeduplicateContacts()
