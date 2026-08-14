@@ -270,11 +270,34 @@ public class ContactBook
             Console.WriteLine("Contact not created.");
         }
 
+        PressEnterToContinue();
+
     }
 
     private void ReviewContact()
     {
+        int index = GetInt("Enter index: ", 1, allContacts.Count) - 1;
+
+        Console.Clear();
+        ReviewContact(index);
+        PressEnterToContinue();
+    }
+
+    private void ReviewContact(int index)
+    {
+        Contact c = allContacts[index];
+
+        Console.WriteLine(new string ('#', 80) );
         Console.WriteLine("Review Contact");
+        Console.WriteLine(new string ('#', 80) );
+        Console.WriteLine();
+
+        Console.WriteLine($"Enter First Name: {c.GetFname()}");
+        Console.WriteLine($"Enter Last Name: {c.GetLname()}");
+        Console.WriteLine($"Enter Phone: {c.GetPhone()}");
+        Console.WriteLine($"Enter email: {c.GetEmail()}");
+
+        Console.WriteLine();    
     }
 
     private void UpdateContact()
