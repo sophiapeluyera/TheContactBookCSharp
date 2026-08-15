@@ -1,5 +1,6 @@
 namespace TheContactBook;
 
+using System.Runtime.CompilerServices;
 using static ContactComparer;
 public class ContactBook
 {
@@ -76,6 +77,7 @@ public class ContactBook
 
     private void ShowContacts()
     {
+        Console.Clear();
         ShowContacts(filteredContacts, page , size);
     }
 
@@ -465,7 +467,74 @@ public class ContactBook
 
     private void DeduplicateContacts()
     {
-        Console.WriteLine("Deduplicate Contacts");
+        List<List<Contact>> duplicateGroups = ContactMerger.FindDuplicates(allContacts);
+        List<Contact> temp = new List<Contact>();
+
+        foreach(var group in duplicateGroups)
+        {
+            if(group.Count> 1)
+            {
+                Console.Clear();
+                Console.WriteLine(new string('#', 80));
+                Console.WriteLine("Duplicate Contacts:");
+                Console.WriteLine(new string('#', 80));
+                Console.WriteLine();
+                ShowContacts(group, 1, group.Count);
+                int fnameIndex =GetInt("Enter first name index", 1, group.Count)-1;
+                int lnameIndex =GetInt("Enter first name index", 1, group.Count)-1;
+                int phoneIndex =GetInt("Enter phone index", 1, group.Count)-1;
+                int emailIndex =GetInt("Enter email index", 1, group.Count)-1;
+
+                Contact merged = new Contact();
+                merged.SetFname(group[fnameIndex].GetFname());
+                merged.SetLname(group[lnameIndex].GetLname());
+                merged.SetPhone(group[phoneIndex].GetPhone());
+                merged.SetEmail(group[emailIndex].GetEmail());
+                
+                Console.Clear();
+                Console.WriteLine(new string('#', 80));
+                Console.WriteLine("Merged Contact:");
+                Console.WriteLine(new string('#', 80));
+                Console.WriteLine();
+
+                List<Contact> mergedLS = new List<Contact> {merged};
+                ShowContacts(mergedLS, 1, 1);
+                Console.WriteLine();
+
+                if(Confirm("Do you want to merge these contacts?", NO))
+                {
+                    temp.Add(merged);
+                    Console.WriteLine("Operation successful.");
+                }
+                else
+                {
+                    temp.AddRange(group);
+                    Console.WriteLine("Operation cancelled.");
+            
+                }
+
+                PressEnterToContinue();
+            }
+            else
+            {
+                temp.AddRange(group);
+            }
+           Console.WriteLine();
+            
+        }
+
+        if(Confirm("Do you want to apply all changes to the contacts?", NO))
+        {
+            allContacts = filteredContacts = temp;
+            Console.WriteLine("Contacts deduplicated.");
+        }
+        else
+        {
+            Console.WriteLine("Operation cancelled.");
+        }
+        Console.WriteLine();
+        PressEnterToContinue();
+
     }
 
     private void Exit()

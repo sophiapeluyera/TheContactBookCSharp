@@ -112,7 +112,10 @@ public static class ContactSeed
         new Contact("Gavin", "Bryant", "209-555-4420", "gavin.bryant@gmail.ie"),
         new Contact("Natalie", "Alexander", "312-555-9930", "natalie.alexander@msn.ie"),
         new Contact("Eli", "Russell", "469-555-6611", "eli.russell@aol.ie"),
-        new Contact("Zoe", "Griffin", "502-555-7741", "zoe.griffin@pm.me.ie")
+        new Contact("Zoe", "", "502-555-7741", "zoe.griffin@pm.me.ie"),
+        new Contact("Zoe", "Griffin", "502-555-7741", "zoe.griffin@pm.me.ie"),
+        new Contact("Eli", "", "469-555-6611", "")
+       
 
     };
 }
